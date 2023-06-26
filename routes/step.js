@@ -1,12 +1,10 @@
 var express = require("express");
-const cors = require("./cors");
 const { Step } = require("../models/step");
 var stepRouter = express.Router();
 
 stepRouter
     .route("/")
-    .options(cors.corsWithOptions, (req, res) => res.sendStatus(200))
-    .get(cors.corsWithOptions, (req, res, next) => {
+    .get((req, res, next) => {
         Step.find()
             .then((steps) => {
                 res.statusCode = 200;
@@ -15,11 +13,10 @@ stepRouter
             })
             .catch((err) => next(err));
     })
-    .post(cors.cors, (req, res, next) => {
+    .post((req, res, next) => {
         Step.create(req.body)
             .then((step) => {
                 res.statusCode = 200;
-                res.setHeader("Access-Control-Allow-Origin", "*");
                 res.setHeader("Content-Type", "application/json");
                 res.json(step);
             })
@@ -29,9 +26,34 @@ stepRouter
         res.statusCode = 403;
         res.end("PUT operation not supported on /step/");
     })
-    .delete((req, res) => {
+    .delete((req, res, next) => {
+        Step.deleteMany()
+            .then((response) => {
+                res.statusCode = 200;
+                res.setHeader("Content-Type", "application/json");
+                res.json(response);
+            })
+            .catch((err) => next(err));
+    });
+
+stepRouter
+    .route("/:stepId")
+    .get((req, res, next) => {
         res.statusCode = 403;
-        res.end("DELETE operation not supported on /step/");
+        res.end(`GET operation not supported on /step/${req.params.stepId}`);
+    })
+    .delete((req, res, next) => {
+        Step.findById(req.params.stepId)
+            .then((step) => {
+                Step.deleteOne({ _id: step._id })
+                    .then((response) => {
+                        res.statusCode = 200;
+                        res.setHeader("Content-Type", "application/json");
+                        res.json(response);
+                    })
+                    .catch((err) => next(err));
+            })
+            .catch((err) => next(err));
     });
 
 module.exports = stepRouter;

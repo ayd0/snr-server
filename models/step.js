@@ -8,23 +8,19 @@ const stepSchema = new mongoose.Schema({
     },
     name: {
         type: String,
-        default: '',
         required: true
     },
     text: {
         type: String,
         default: '',
-        required: true,
     },
     code: {
         type: String,
         default: '',
-        required: true,
     },
     links: {
         type: Array,
         default: [],
-        required: true,
     },
     // component: --> assignment will be part of state management
 });

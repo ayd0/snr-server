@@ -3,6 +3,7 @@ const express = require("express");
 const path = require("path");
 const logger = require("morgan");
 const config = require("./config");
+const cors = require("cors");
 
 const mongoose = require("mongoose");
 const url = config.mongoUrl;
@@ -26,6 +27,11 @@ const indexRouter = require("./routes/index");
 const stepRouter = require("./routes/step");
 
 const app = express();
+
+app.use(cors({
+    allowedHeaders: ["authorization", "Content-Type"],
+    exposedHeaders: ["authorization"]
+}));
 
 // view engine setup
 app.set("views", path.join(__dirname, "views"));
