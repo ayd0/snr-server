@@ -39,8 +39,29 @@ stepRouter
 stepRouter
     .route("/:stepId")
     .get((req, res, next) => {
+        Step.findById(req.params.stepId)
+            .then((step) => {
+                res.statusCode = 200;
+                res.setHeader("Content-Type", "application/json");
+                res.json(step);
+            })
+            .catch((err) => next(err));
+    })
+    .post((req, res) => {
         res.statusCode = 403;
-        res.end(`GET operation not supported on /step/${req.params.stepId}`);
+        res.end(`POST operation not supported on /step/${req.params.stepId}`);
+    })
+    .put((req, res, next) => {
+        Step.updateOne(
+            { _id: req.params.stepId },
+            req.body,
+        )
+            .then((response) => {
+                res.statusCode = 200;
+                res.setHeader("Content-Type", "application/json");
+                res.json(response);
+            })
+            .catch((err) => next(err));
     })
     .delete((req, res, next) => {
         Step.findById(req.params.stepId)

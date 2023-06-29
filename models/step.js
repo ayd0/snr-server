@@ -22,6 +22,10 @@ const stepSchema = new mongoose.Schema({
         type: Array,
         default: [],
     },
+    time: {
+        type: Number,
+        required: true,
+    }
     // component: --> assignment will be part of state management
 });
 
