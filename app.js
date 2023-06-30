@@ -25,6 +25,7 @@ mongoose.connect(url).then(
 
 const indexRouter = require("./routes/index");
 const stepRouter = require("./routes/step");
+const timeRouter = require("./routes/time");
 
 const app = express();
 
@@ -44,6 +45,7 @@ app.use(express.urlencoded({ extended: false }));
 // routes
 app.use("/", indexRouter);
 app.use("/step", stepRouter);
+app.use("/time", timeRouter);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
