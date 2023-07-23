@@ -1,5 +1,6 @@
 const express = require("express");
 const { Subject } = require("../models/subject");
+const { Step } = require("../models/step");
 const subjectRouter = express.Router();
 
 subjectRouter
@@ -67,6 +68,14 @@ subjectRouter
         .delete((req, res, next) => {
             Subject.findById(req.params.subjectId)
                 .then((subject) => {
+                    for (const step of subject.steps) {
+                        console.log(step.toString());
+                        Step.deleteOne({ _id: step.toString() })
+                            .then(
+                                console.log(`step ${step.toString()} deleted`)
+                            )
+                            .catch((err) => console.error(err));
+                    }
                     Subject.deleteOne({ _id: subject._id })
                         .then((response) => {
                             res.statusCode = 200;
