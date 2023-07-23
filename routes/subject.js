@@ -38,53 +38,54 @@ subjectRouter
             .catch((err) => next(err));
     });
 
-    subjectRouter
-        .route("/:subjectId")
-        .get((req, res, next) => {
-            Subject.findById(req.params.subjectId)
-                .populate("steps")
-                .then((subject) => {
-                    res.statusCode = 200;
-                    res.setHeader("Content-Type", "application/json");
-                    res.json(subject);
-                })
-                .catch((err) => next(err));
-        })
-        .post((req, res) => {
-            res.statusCode = 403;
-            res.end(
-                `POST operation not supported on /subject/${req.params.subjectId}/`
-            );
-        })
-        .put((req, res, next) => {
-            Subject.updateOne({ _id: req.params.subjectId }, req.body)
-                .then((response) => {
-                    res.statusCode = 200;
-                    res.setHeader("Content-Type", "application/json");
-                    res.json(response);
-                })
-                .catch((err) => next(err));
-        })
-        .delete((req, res, next) => {
-            Subject.findById(req.params.subjectId)
-                .then((subject) => {
-                    for (const step of subject.steps) {
-                        console.log(step.toString());
-                        Step.deleteOne({ _id: step.toString() })
-                            .then(
-                                console.log(`step ${step.toString()} deleted`)
-                            )
-                            .catch((err) => console.error(err));
-                    }
-                    Subject.deleteOne({ _id: subject._id })
-                        .then((response) => {
-                            res.statusCode = 200;
-                            res.setHeader("Content-Type", "application/json");
-                            res.json(response);
+subjectRouter
+    .route("/:subjectId")
+    .get((req, res, next) => {
+        Subject.findById(req.params.subjectId)
+            .populate("steps")
+            .then((subject) => {
+                res.statusCode = 200;
+                res.setHeader("Content-Type", "application/json");
+                res.json(subject);
+            })
+            .catch((err) => next(err));
+    })
+    .post((req, res) => {
+        res.statusCode = 403;
+        res.end(
+            `POST operation not supported on /subject/${req.params.subjectId}/`
+        );
+    })
+    .put((req, res, next) => {
+        Subject.updateOne({ _id: req.params.subjectId }, req.body)
+            .then((response) => {
+                res.statusCode = 200;
+                res.setHeader("Content-Type", "application/json");
+                res.json(response);
+            })
+            .catch((err) => next(err));
+    })
+    .delete((req, res, next) => {
+        Subject.findById(req.params.subjectId)
+            .then((subject) => {
+                for (const step of subject.steps) {
+                    Step.findById(step.toString())
+                        .then((step) => {
+                            Step.deleteOne({ _id: step.toString() }).catch(
+                                (err) => console.error(err)
+                            );
                         })
-                        .catch((err) => next(err));
-                })
-                .catch((err) => next(err));
-        });
+                        .catch((err) => console.error(err));
+                }
+                Subject.deleteOne({ _id: subject._id })
+                    .then((response) => {
+                        res.statusCode = 200;
+                        res.setHeader("Content-Type", "application/json");
+                        res.json(response);
+                    })
+                    .catch((err) => next(err));
+            })
+            .catch((err) => next(err));
+    });
 
-    module.exports = subjectRouter;
+module.exports = subjectRouter;
