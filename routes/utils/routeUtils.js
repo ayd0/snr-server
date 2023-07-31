@@ -5,7 +5,7 @@ const recursiveDeleteParent = (
     childKeyName,
 ) => {
     // type of childKeyName must be string
-    let resolved = new Promise((resolve, reject) => {
+    const resolved = new Promise((resolve, reject) => {
         parentType
             .findById(parentId)
             .then((parent) => {

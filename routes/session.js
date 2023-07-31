@@ -76,9 +76,7 @@ sessionRouter
                         Subject,
                         Step,
                         subject.toString(),
-                        "steps",
-                        res,
-                        next
+                        "steps"
                     );
                 }
             })
