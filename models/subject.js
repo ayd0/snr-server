@@ -5,6 +5,10 @@ const subjectSchema = mongoose.Schema({
         type: String,
         required: true,
     },
+    time: {
+        type: Number,
+        required: true,
+    },
     steps: [{ type: mongoose.Schema.Types.ObjectId, ref: "Step" }],
 });
 

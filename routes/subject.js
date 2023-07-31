@@ -1,6 +1,8 @@
 const express = require("express");
 const { Subject } = require("../models/subject");
 const { Step } = require("../models/step");
+const recursiveDeleteParent =
+    require("./utils/routeUtils").recursiveDeleteParent;
 const subjectRouter = express.Router();
 
 subjectRouter
@@ -66,24 +68,12 @@ subjectRouter
             .catch((err) => next(err));
     })
     .delete((req, res, next) => {
-        Subject.findById(req.params.subjectId)
-            .then((subject) => {
-                for (const step of subject.steps) {
-                    Step.findById(step.toString())
-                        .then((step) => {
-                            Step.deleteOne({ _id: step.toString() }).catch(
-                                (err) => console.error(err)
-                            );
-                        })
-                        .catch((err) => console.error(err));
-                }
-                Subject.deleteOne({ _id: subject._id })
-                    .then((response) => {
-                        res.statusCode = 200;
-                        res.setHeader("Content-Type", "application/json");
-                        res.json(response);
-                    })
-                    .catch((err) => next(err));
+        recursiveDeleteParent(Subject, Step, req.params.subjectId, "steps")
+            .then((response) => {
+                console.log(response);
+                res.statusCode = 200;
+                res.setHeader("Content-Type", "application/json");
+                res.json(response);
             })
             .catch((err) => next(err));
     });

@@ -24,6 +24,7 @@ mongoose.connect(url).then(
 );
 
 const indexRouter = require("./routes/index");
+const sessionRouter = require("./routes/session");
 const stepRouter = require("./routes/step");
 const subjectRouter = require("./routes/subject");
 const timeRouter = require("./routes/time");
@@ -45,6 +46,7 @@ app.use(express.urlencoded({ extended: false }));
 
 // routes
 app.use("/", indexRouter);
+app.use("/session", sessionRouter);
 app.use("/step", stepRouter);
 app.use("/subject", subjectRouter);
 app.use("/time", timeRouter);
